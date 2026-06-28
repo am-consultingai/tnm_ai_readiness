@@ -3,6 +3,8 @@ import CountUp from './CountUp.jsx'
 import MaturityStairs from './MaturityStairs.jsx'
 import { ArrowRight, Calendar } from './icons.jsx'
 import { BOOK_URL } from '../config.js'
+import cncPhoto from '../assets/cnc-machine.jpg'
+import cctvPhoto from '../assets/cctv-control.jpg'
 
 // כל פרק עוקב אחר אותו מקצב:
 //   אמירה שיוצרת דחיפות → שאלה לקורא → גיבוי במספר מסקר → ערך שמושך הלאה → קריאה לפעולה
@@ -22,6 +24,7 @@ const CHAPTERS = [
       ],
       kicker: 'הפער בין המובילים לכל השאר מצטבר בכל רבעון.',
     },
+    photo: cncPhoto,
     cta: { label: 'גלו איפה אתם עומדים — תוך 4 דקות', href: '#scorecard', icon: 'arrow' },
   },
   {
@@ -64,6 +67,7 @@ const CHAPTERS = [
       ],
       kicker: 'כאן בדיוק ה-DNA האבטחתי של קבוצת T&M הופך ליתרון הבלתי-הוגן שלכם.',
     },
+    photo: cctvPhoto,
     cta: { label: 'קבעו סקירת AI ממוקדת-אבטחה', href: BOOK_URL, icon: 'cal' },
   },
   {
@@ -88,6 +92,13 @@ function Chapter({ ch, index }) {
   const flip = index % 2 === 1
   return (
     <section className={`section chapter ${index % 2 ? 'surface-pale' : ''}`} id={ch.id}>
+      {ch.photo && (
+        <div
+          className={`chapter-photo ${flip ? 'right' : 'left'}`}
+          style={{ backgroundImage: `url(${ch.photo})` }}
+          aria-hidden="true"
+        />
+      )}
       <div className="container chapter-grid">
         <div className="chapter-main reveal">
           <span className="eyebrow">{String(index + 1).padStart(2, '0')} · {ch.theme}</span>

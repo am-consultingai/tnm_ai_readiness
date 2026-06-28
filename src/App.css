@@ -259,3 +259,23 @@ html, body { overflow-x: hidden; }
   .stair-label span { display: none; }
   .stair-num { width: 22px; height: 22px; font-size: 12px; }
 }
+
+/* ============================================================
+   Blended section imagery (CNC machine / CCTV control room)
+   ============================================================ */
+.chapter { position: relative; overflow: hidden; }
+.chapter .chapter-grid { position: relative; z-index: 1; }
+.chapter-photo {
+  position: absolute; top: 0; bottom: 0; width: 56%; z-index: 0; pointer-events: none;
+  background-size: cover; background-position: center;
+  opacity: .5; filter: grayscale(.35) contrast(1.02);
+}
+/* navy duotone so the photo reads as part of the brand, not a literal snapshot */
+.chapter-photo::after { content: ""; position: absolute; inset: 0; background: var(--navy); opacity: .22; mix-blend-mode: multiply; }
+.chapter-photo.left  { left: 0;  -webkit-mask-image: linear-gradient(to right, #000 0%, transparent 80%); mask-image: linear-gradient(to right, #000 0%, transparent 80%); }
+.chapter-photo.right { right: 0; -webkit-mask-image: linear-gradient(to left,  #000 0%, transparent 80%); mask-image: linear-gradient(to left,  #000 0%, transparent 80%); }
+@media (max-width: 860px) {
+  .chapter-photo { width: 100%; left: 0; right: 0; opacity: .12;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); }
+}
