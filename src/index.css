@@ -1,0 +1,146 @@
+/* ============================================================
+   T&M Group — Brand tokens (extracted from tmprotection.co.il)
+   ============================================================ */
+/* Self-hosted SimplerPro — T&M's corporate typeface (Regular + Bold) */
+@font-face {
+  font-family: "SimplerPro";
+  src: url("./assets/fonts/SimplerPro-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "SimplerPro";
+  src: url("./assets/fonts/SimplerPro-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  --navy:        #1B213D;   /* primary */
+  --navy-77:     rgba(27,33,61,0.77);
+  --navy-55:     rgba(27,33,61,0.55);
+  --navy-12:     rgba(27,33,61,0.12);
+  --cream:       #FFFEF5;   /* page background */
+  --white:       #FFFFFF;
+  --red:         #E21313;   /* accent */
+  --red-soft:    #fbe6e6;
+  --pale:        #E6ECF6;   /* secondary surface (pale blue) */
+  --pale-deep:   #d6e0f1;
+  --line:        rgba(27,33,61,0.10);
+
+  --font: "SimplerPro", "Assistant", "Heebo", system-ui, sans-serif;
+
+  --radius-pill: 100px;
+  --radius-card: 28px;
+  --radius-sm:   16px;
+
+  --shadow-card: 0px 7px 18px rgba(27,33,61,0.10);
+  --shadow-deep: 0px 24px 60px rgba(27,33,61,0.18);
+  --container: 1180px;
+  --transition: 0.35s cubic-bezier(.2,.7,.3,1);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--cream); }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--navy);
+  background: transparent;     /* lets the animated background show through */
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+
+/* ---------- Animated network background (behind everything) ---------- */
+.net-bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: block; }
+
+h1, h2, h3, h4 { font-weight: 700; line-height: 1.05; margin: 0 0 .4em; letter-spacing: -0.01em; }
+p { margin: 0 0 1em; color: var(--navy-77); }
+a { color: inherit; }
+
+.container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+.section { padding: 92px 0; }
+.center { text-align: center; }
+.accent { color: var(--red); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 14px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 18px;
+}
+.eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--red); border-radius: 2px; }
+
+.h-display { font-size: clamp(40px, 6vw, 78px); }
+.h-section { font-size: clamp(30px, 4vw, 46px); }
+.lead { font-size: clamp(17px, 1.6vw, 20px); color: var(--navy-77); }
+
+/* ---------- Pill button (T&M signature, with arrow badge) ---------- */
+.pill {
+  display: inline-flex; align-items: center; gap: 14px;
+  border: none; cursor: pointer; font-family: var(--font); font-weight: 500;
+  font-size: 16px; padding: 9px 9px 9px 26px;
+  border-radius: var(--radius-pill); text-decoration: none;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+  line-height: 1.15;
+}
+.pill:hover { transform: translateY(-2px); }
+.pill .badge {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center; flex: none;
+}
+.pill .badge svg { width: 16px; height: 16px; }
+
+.pill--primary { background: var(--navy); color: var(--white); box-shadow: var(--shadow-card); }
+.pill--primary:hover { box-shadow: var(--shadow-deep); }
+.pill--primary .badge { background: var(--red); }
+.pill--primary .badge svg { stroke: var(--white); }
+
+.pill--secondary { background: var(--pale); color: var(--navy); }
+.pill--secondary:hover { background: var(--pale-deep); }
+.pill--secondary .badge { background: var(--navy); }
+.pill--secondary .badge svg { stroke: var(--white); }
+
+.pill--ghost { background: transparent; color: var(--navy); box-shadow: inset 0 0 0 1.5px var(--navy-12); }
+.pill--ghost .badge { background: var(--navy); }
+.pill--ghost .badge svg { stroke: var(--white); }
+
+.pill--lg { font-size: 18px; padding: 11px 11px 11px 30px; }
+.pill--lg .badge { width: 44px; height: 44px; }
+.pill[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* ---------- RTL (Hebrew-first) overrides ---------- */
+[dir="rtl"] .pill { padding: 9px 26px 9px 9px; }
+[dir="rtl"] .pill--lg { padding: 11px 30px 11px 11px; }
+[dir="rtl"] .pill .badge > svg { transform: scaleX(-1); }   /* mirror arrows for RTL reading */
+[dir="rtl"] .eyebrow { letter-spacing: 0; text-transform: none; }  /* clean Hebrew + keep IoT/AI casing */
+
+/* ---------- Cards & surfaces ---------- */
+.card {
+  background: var(--white); border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card); border: 1px solid var(--line);
+}
+.surface-navy { background: var(--navy); color: var(--cream); }
+.surface-navy h1, .surface-navy h2, .surface-navy h3 { color: var(--white); }
+.surface-navy p { color: rgba(255,255,255,0.72); }
+.surface-pale { background: var(--pale); }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px;
+  background: var(--white); border: 1px solid var(--line); color: var(--navy-77);
+  padding: 7px 14px; border-radius: var(--radius-pill);
+}
+
+.fade-in { animation: fade .6s var(--transition) both; }
+@keyframes fade { from { opacity: 0; transform: translateY(14px);} to {opacity:1; transform:none;} }
+
+/* ---------- Scroll reveal (AOS-style, like tmprotection.co.il) ---------- */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s cubic-bezier(.2,.7,.3,1), transform .8s cubic-bezier(.2,.7,.3,1); will-change: opacity, transform; }
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: .1s; }
+.reveal.d2 { transition-delay: .2s; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+.divider-curve { height: 0; }
+
+@media (max-width: 760px) {
+  .section { padding: 64px 0; }
+}
