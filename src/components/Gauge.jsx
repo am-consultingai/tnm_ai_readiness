@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useT } from '../i18n.jsx'
 
 // Semicircular animated gauge, 0..100.
 export default function Gauge({ score = 0, band = '', size = 260 }) {
+  const outOf = useT().teaser.outOf
   const [val, setVal] = useState(0)
   useEffect(() => {
     let raf, start
@@ -44,7 +46,7 @@ export default function Gauge({ score = 0, band = '', size = 260 }) {
         <path d={arc(0, Math.max(val, 0.5))} stroke="url(#gaugeGrad)" strokeWidth="16" fill="none" strokeLinecap="round" />
         <circle cx={nx} cy={ny} r="9" fill="#fff" stroke="#1B213D" strokeWidth="3" />
         <text x={cx} y={cy - 30} textAnchor="middle" fontSize={size * 0.26} fontWeight="800" fill="#1B213D">{val}</text>
-        <text x={cx} y={cy - 8} textAnchor="middle" fontSize="14" fill="rgba(27,33,61,0.55)">מתוך 100</text>
+        <text x={cx} y={cy - 8} textAnchor="middle" fontSize="14" fill="rgba(27,33,61,0.55)">{outOf}</text>
       </svg>
       {band && (
         <div className="center" style={{ marginTop: 6 }}>

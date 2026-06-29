@@ -1,17 +1,18 @@
 import { useMemo, useRef, useState } from 'react'
 import './scorecard.css'
-import { QUESTIONS, PILLARS } from '../data/questions.js'
+import { QUESTION_META, PILLAR_ORDER, PILLAR_META } from '../data/quiz.js'
 import { computeScores } from '../lib/scoring.js'
 import { PILLAR_ICONS, ArrowRight, Calendar } from './icons.jsx'
 import PillButton from './PillButton.jsx'
 import { BOOK_URL } from '../config.js'
+import { useT } from '../i18n.jsx'
 import TeaserResult from './TeaserResult.jsx'
 import LeadForm from './LeadForm.jsx'
 import FullReport from './FullReport.jsx'
 
-const PREVIEW = ['business', 'data', 'infra', 'people', 'security']
-
 export default function Scorecard() {
+  const T = useT()
+  const sc = T.scorecard
   const [stage, setStage] = useState('intro') // intro | quiz | teaser | form | report
   const [idx, setIdx] = useState(0)
   const [answers, setAnswers] = useState({})
@@ -19,13 +20,14 @@ export default function Scorecard() {
   const cardRef = useRef(null)
 
   const result = useMemo(() => computeScores(answers), [answers])
-  const total = QUESTIONS.length
-  const q = QUESTIONS[idx]
+  const total = QUESTION_META.length
+  const meta = QUESTION_META[idx]
+  const q = T.questions[idx]
 
   const scrollTop = () => cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   const pick = (val) => {
-    setAnswers((a) => ({ ...a, [q.id]: val }))
+    setAnswers((a) => ({ ...a, [meta.id]: val }))
     setTimeout(() => {
       if (idx + 1 < total) { setIdx(idx + 1) }
       else { setStage('teaser'); scrollTop() }
@@ -33,69 +35,63 @@ export default function Scorecard() {
   }
 
   const progress = stage === 'quiz'
-    ? Math.round(((idx + (answers[q?.id] ? 1 : 0)) / total) * 100)
+    ? Math.round(((idx + (answers[meta?.id] ? 1 : 0)) / total) * 100)
     : stage === 'intro' ? 0 : 100
 
   return (
     <section className="section surface-pale" id="scorecard">
       <div className="container" style={{ maxWidth: 980 }}>
         <div className="center reveal" style={{ marginBottom: 30 }}>
-          <span className="eyebrow" style={{ justifyContent: 'center' }}>השאלון</span>
-          <h2 className="h-section">גלו את ציון המוכנות שלכם ל-AI תוך 4 דקות</h2>
+          <span className="eyebrow" style={{ justifyContent: 'center' }}>{sc.eyebrow}</span>
+          <h2 className="h-section">{sc.title}</h2>
         </div>
 
         <div className="sc-card sc-anchor" ref={cardRef}>
-          {/* progress bar (hidden on intro) */}
           {stage !== 'intro' && (
             <div className="sc-top">
               <div className="sc-progress"><span style={{ width: `${progress}%` }} /></div>
               <span className="sc-count">
-                {stage === 'quiz' ? `שאלה ${idx + 1} / ${total}` : stage === 'teaser' ? 'תוצאה' : stage === 'form' ? 'כמעט סיימנו' : 'הושלם'}
+                {stage === 'quiz' ? sc.question(idx + 1, total) : stage === 'teaser' ? sc.result : stage === 'form' ? sc.almost : sc.complete}
               </span>
             </div>
           )}
 
           <div className="sc-body">
-            {/* INTRO */}
             {stage === 'intro' && (
               <div className="fade-in">
-                <span className="sc-q-pill"><span className="dot" /> 8 שאלות · 4 דקות · חינם</span>
-                <h3 className="sc-question">5 ממדים קובעים אם AI יעבוד בתפעול שלכם — או ייתקע.</h3>
-                <p className="sc-help" style={{ fontSize: 16 }}>
-                  ענו בכנות. תקבלו ציון מיידי, ואז פירוט מלא שמראה בדיוק מאיפה להתחיל —
-                  כולל עד כמה המכשירים המחוברים שלכם מאובטחים.
-                </p>
+                <span className="sc-q-pill"><span className="dot" /> {sc.qPill}</span>
+                <h3 className="sc-question">{sc.introQ}</h3>
+                <p className="sc-help" style={{ fontSize: 16 }}>{sc.introHelp}</p>
                 <div className="sc-pillars">
-                  {PREVIEW.map((k) => {
-                    const Icon = PILLAR_ICONS[PILLARS[k].icon]
+                  {PILLAR_ORDER.map((k) => {
+                    const Icon = PILLAR_ICONS[PILLAR_META[k].icon]
                     return (
                       <div className={`sc-pillar ${k === 'security' ? 'security' : ''}`} key={k}>
                         <div className="ic"><Icon style={{ width: 22, height: 22 }} /></div>
-                        <b>{PILLARS[k].short}</b>
+                        <b>{T.pillars[k].short}</b>
                       </div>
                     )
                   })}
                 </div>
                 <div className="sc-nav" style={{ paddingTop: 0 }}>
-                  <span style={{ fontSize: 13, color: 'var(--navy-55)' }}>ללא עלות · ללא התחייבות</span>
+                  <span style={{ fontSize: 13, color: 'var(--navy-55)' }}>{sc.noObligation}</span>
                   <PillButton size="lg" icon={ArrowRight} onClick={() => { setStage('quiz'); scrollTop() }}>
-                    התחילו את השאלון
+                    {sc.start}
                   </PillButton>
                 </div>
               </div>
             )}
 
-            {/* QUIZ */}
             {stage === 'quiz' && q && (
-              <div className="fade-in" key={q.id}>
-                <span className="sc-q-pill"><span className="dot" /> {PILLARS[q.pillar].name}</span>
+              <div className="fade-in" key={meta.id}>
+                <span className="sc-q-pill"><span className="dot" /> {T.pillars[meta.pillar].name}</span>
                 <h3 className="sc-question">{q.text}</h3>
                 {q.help && <p className="sc-help">{q.help}</p>}
                 <div className="sc-options">
                   {q.options.map((opt, i) => (
                     <button
                       key={i}
-                      className={`sc-option ${answers[q.id] === i + 1 ? 'selected' : ''}`}
+                      className={`sc-option ${answers[meta.id] === i + 1 ? 'selected' : ''}`}
                       onClick={() => pick(i + 1)}
                     >
                       <span className="num">{i + 1}</span>
@@ -104,23 +100,20 @@ export default function Scorecard() {
                   ))}
                 </div>
                 <div className="sc-nav">
-                  <button className="sc-back" disabled={idx === 0} onClick={() => setIdx(Math.max(0, idx - 1))}>חזרה →</button>
-                  <span style={{ fontSize: 13, color: 'var(--navy-55)' }}>בחרו את האפשרות שמתאימה ביותר</span>
+                  <button className="sc-back" disabled={idx === 0} onClick={() => setIdx(Math.max(0, idx - 1))}>{sc.back}</button>
+                  <span style={{ fontSize: 13, color: 'var(--navy-55)' }}>{sc.hint}</span>
                 </div>
               </div>
             )}
 
-            {/* TEASER */}
             {stage === 'teaser' && (
               <TeaserResult result={result} onUnlock={() => { setStage('form'); scrollTop() }} />
             )}
 
-            {/* FORM */}
             {stage === 'form' && (
               <LeadForm onSubmit={(data) => { setLead(data); setStage('report'); scrollTop() }} />
             )}
 
-            {/* REPORT */}
             {stage === 'report' && (
               <FullReport result={result} lead={lead} />
             )}
@@ -128,8 +121,8 @@ export default function Scorecard() {
         </div>
 
         <div className="sc-talk">
-          <span>מעדיפים לדבר על זה קודם?</span>
-          <PillButton as="a" href={BOOK_URL} variant="ghost" icon={Calendar}>קבעו שיחה עם מומחה AI</PillButton>
+          <span>{sc.talk}</span>
+          <PillButton as="a" href={BOOK_URL} variant="ghost" icon={Calendar}>{T.nav.bookExpert}</PillButton>
         </div>
       </div>
     </section>

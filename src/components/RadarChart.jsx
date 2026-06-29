@@ -1,7 +1,9 @@
-import { PILLARS, PILLAR_ORDER } from '../data/questions.js'
+import { PILLAR_ORDER } from '../data/quiz.js'
+import { useT } from '../i18n.jsx'
 
 // Pure-SVG pentagon radar of the 5 pillar scores (0..100). Supports a blurred/locked state.
 export default function RadarChart({ pillars, size = 360, blurred = false }) {
+  const PT = useT().pillars
   const cx = size / 2, cy = size / 2, R = size / 2 - 54
   const n = PILLAR_ORDER.length
   const angleFor = (i) => -Math.PI / 2 + (i * 2 * Math.PI) / n
@@ -35,7 +37,7 @@ export default function RadarChart({ pillars, size = 360, blurred = false }) {
         return (
           <text key={k} x={x} y={y} textAnchor={anchor} dominantBaseline="middle"
                 fontSize="13" fontWeight="700" fill="#1B213D">
-            {PILLARS[k].short}
+            {PT[k].short}
             <tspan x={x} dy="15" fontSize="12" fontWeight="800" fill="#E21313">{pillars?.[k] ?? 0}</tspan>
           </text>
         )

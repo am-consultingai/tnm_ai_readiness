@@ -2,19 +2,23 @@ import Gauge from './Gauge.jsx'
 import RadarChart from './RadarChart.jsx'
 import PillButton from './PillButton.jsx'
 import { Lock } from './icons.jsx'
+import { useT } from '../i18n.jsx'
 
 export default function TeaserResult({ result, onUnlock }) {
+  const T = useT()
+  const t = T.teaser
+  const band = T.bands[result.bandIndex]
   return (
     <div className="fade-in">
-      <span className="eyebrow">התוצאה שלכם מוכנה</span>
+      <span className="eyebrow">{t.ready}</span>
       <h3 className="h-section" style={{ fontSize: 'clamp(26px,3vw,38px)' }}>
-        הציון שלכם: <span className="accent">{result.overall}/100</span> — {result.band.label}
+        {t.scorePre}<span className="accent">{result.overall}/100</span> — {band.label}
       </h3>
-      <p className="lead" style={{ maxWidth: 560 }}>{result.band.blurb}</p>
+      <p className="lead" style={{ maxWidth: 560 }}>{band.blurb}</p>
 
       <div className="sc-teaser" style={{ marginTop: 18 }}>
         <div className="center">
-          <Gauge score={result.overall} band={result.band.label} />
+          <Gauge score={result.overall} band={band.label} />
         </div>
 
         <div className="sc-locked">
@@ -22,15 +26,15 @@ export default function TeaserResult({ result, onUnlock }) {
           <div className="sc-lock-overlay">
             <div>
               <div className="lk"><Lock /></div>
-              <strong style={{ display: 'block', fontSize: 16 }}>הפירוט שלכם ב-5 ממדים</strong>
-              <span style={{ color: 'var(--navy-55)', fontSize: 14 }}>שחררו כדי לראות את החוליה החלשה</span>
+              <strong style={{ display: 'block', fontSize: 16 }}>{t.lockTitle}</strong>
+              <span style={{ color: 'var(--navy-55)', fontSize: 14 }}>{t.lockSub}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="center" style={{ marginTop: 30 }}>
-        <PillButton size="lg" onClick={onUnlock}>שחררו את הפירוט המלא ותוכנית הפעולה</PillButton>
+        <PillButton size="lg" onClick={onUnlock}>{t.unlock}</PillButton>
       </div>
     </div>
   )
